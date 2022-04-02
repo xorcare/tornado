@@ -33,13 +33,14 @@ jobs:
       env:
         TORNADO_TEST_TORRC_OPTIONS: ${{ secrets.TORNADO_TEST_TORRC_LINUX_OPTIONS }}
       run: |
-        go test -v -cover ./... -coverprofile coverage.out -coverpkg ./...
-        go tool cover -func coverage.out -o coverage.out
+        go test -count=1 -coverprofile=coverage.out -covermode=atomic ./...
+        go tool cover -func coverage.out -o cover.out
+        cat cover.out
 
     - uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: coverage.out
+        files: ./coverage.out,./cover.out
         verbose: true
 
   test-macos:
@@ -65,11 +66,12 @@ jobs:
       env:
         TORNADO_TEST_TORRC_OPTIONS: ${{ secrets.TORNADO_TEST_TORRC_MACOS_OPTIONS }}
       run: |
-        go test -v -cover ./... -coverprofile coverage.out -coverpkg ./...
-        go tool cover -func coverage.out -o coverage.out
+        go test -count=1 -coverprofile=coverage.out -covermode=atomic ./...
+        go tool cover -func coverage.out -o cover.out
+        cat cover.out
 
     - uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: coverage.out
+        files: ./coverage.out,./cover.out
         verbose: true
