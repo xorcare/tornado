@@ -12,6 +12,7 @@ import (
 )
 
 func TestNewPool(t *testing.T) {
+	t.Parallel()
 	t.Run("Should be successful check ip owner tor proxy from pool", func(t *testing.T) {
 		// arrange
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
@@ -39,6 +40,7 @@ func TestNewPool(t *testing.T) {
 }
 
 func TestPool_Close(t *testing.T) {
+	t.Parallel()
 	newPool := func(t *testing.T) *Pool {
 		t.Helper()
 
@@ -58,6 +60,7 @@ func TestPool_Close(t *testing.T) {
 	}
 
 	t.Run("Single calls to the close method do not return an error", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		pool := newPool(t)
 
@@ -71,6 +74,7 @@ func TestPool_Close(t *testing.T) {
 	})
 
 	t.Run("Multiple calls to the close method do not return an error", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		pool := newPool(t)
 		var err error

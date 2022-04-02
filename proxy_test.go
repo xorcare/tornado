@@ -16,12 +16,14 @@ import (
 	"github.com/xorcare/tornado/internal/torproject"
 )
 
-const TestProxyServerStartupTimeout = 90 * time.Second
+const TestProxyServerStartupTimeout = 300 * time.Second
 
 var WithTestTorrOptions = WithTorrcOption(os.Getenv("TORNADO_TEST_TORRC_OPTIONS"))
 
 func TestNewProxy(t *testing.T) {
+	t.Parallel()
 	t.Run("Should be get error impossible dial because set deadlock context dialer", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
@@ -46,6 +48,7 @@ func TestNewProxy(t *testing.T) {
 	})
 
 	t.Run("Should get a successful tor ip checking result", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
@@ -90,6 +93,7 @@ func TestNewProxy(t *testing.T) {
 }
 
 func TestProxy_Close(t *testing.T) {
+	t.Parallel()
 	newProxy := func(t *testing.T) *Proxy {
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
@@ -102,6 +106,7 @@ func TestProxy_Close(t *testing.T) {
 	}
 
 	t.Run("Single calls to the close method do not return an error", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		pool := newProxy(t)
 
@@ -115,6 +120,7 @@ func TestProxy_Close(t *testing.T) {
 	})
 
 	t.Run("Multiple calls to the close method do not return an error", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		pool := newProxy(t)
 		var err error

@@ -13,7 +13,9 @@ import (
 )
 
 func TestNewFloatingProxy(t *testing.T) {
+	t.Parallel()
 	t.Run("Should be successful check ip owner floating tor proxy", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
@@ -45,6 +47,7 @@ func TestNewFloatingProxy(t *testing.T) {
 		}
 	})
 	t.Run("Proxy should work even if the pool is smaller than the number of requests", func(t *testing.T) {
+		t.Parallel()
 		// arrange
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
