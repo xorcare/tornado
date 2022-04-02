@@ -1,25 +1,29 @@
-name: Go
+name: Go extended cases for manual testing
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-  - cron: '18 1 * * 5'
-  workflow_dispatch: { }
+on: workflow_dispatch
 
 jobs:
   test-ubuntu:
-    name: Test all packages on ubuntu-latest
-    runs-on: ubuntu-latest
+    name: Test all packages on ${{ matrix.os }} go:${{ matrix.go }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        go:
+        - '1.16'
+        - '1.17'
+        - '1.18'
+        - '>=1.18'
+        os:
+        - ubuntu-18.04
+        - ubuntu-20.04
+      fail-fast: false
     steps:
     - uses: actions/checkout@v3
 
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: '>=1.18'
+        go-version: ${{ matrix.go }}
 
     - name: Build
       run: go build -v ./...
@@ -43,15 +47,26 @@ jobs:
         verbose: true
 
   test-macos:
-    name: Test all packages on macos-latest
-    runs-on: macos-latest
+    name: Test all packages on ${{ matrix.os }} go:${{ matrix.go }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        go:
+        - '1.16'
+        - '1.17'
+        - '1.18'
+        - '>=1.18'
+        os:
+        - macos-10.15
+        - macos-11
+      fail-fast: true
     steps:
     - uses: actions/checkout@v3
 
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: '>=1.18'
+        go-version: ${{ matrix.go }}
 
     - name: Build
       run: go build -v ./...
