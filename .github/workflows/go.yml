@@ -10,6 +10,17 @@ on:
   workflow_dispatch: { }
 
 jobs:
+  golangci:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-go@v2
+    - uses: actions/checkout@v2
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.45.2
+
   test:
     name: Test all packages on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
