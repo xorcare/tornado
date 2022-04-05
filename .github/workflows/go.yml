@@ -10,42 +10,15 @@ on:
   workflow_dispatch: { }
 
 jobs:
-  test-ubuntu:
-    name: Test all packages on ubuntu-latest
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: '>=1.18'
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Set up Tor
-      run: |
-        sudo apt update
-        sudo apt install -y tor obfs4proxy
-
-    - name: Test
-      env:
-        TORNADO_TEST_TORRC_OPTIONS: ${{ secrets.TORNADO_TEST_TORRC_LINUX_OPTIONS }}
-      run: |
-        go test -count=1 -coverprofile=coverage.out -covermode=atomic ./...
-        go tool cover -func coverage.out -o cover.out
-        cat cover.out
-
-    - uses: codecov/codecov-action@v2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.out,./cover.out
-        verbose: true
-
-  test-macos:
-    name: Test all packages on macos-latest
-    runs-on: macos-latest
+  test:
+    name: Test all packages on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        - macos-latest
+      fail-fast: false
     steps:
     - uses: actions/checkout@v3
 
@@ -63,8 +36,6 @@ jobs:
         brew install tor obfs4proxy
 
     - name: Test
-      env:
-        TORNADO_TEST_TORRC_OPTIONS: ${{ secrets.TORNADO_TEST_TORRC_MACOS_OPTIONS }}
       run: |
         go test -count=1 -coverprofile=coverage.out -covermode=atomic ./...
         go tool cover -func coverage.out -o cover.out
