@@ -31,9 +31,12 @@ func main() {
 
 	prx, err := tornado.NewProxy(ctx)
 	if err != nil {
-		log.Fatalln("failed to create new instance of proxy:", err)
+		log.Panicln("failed to create new instance of proxy:", err)
 	}
-
+	// After usage Proxy must be closed to prevent memory leak and tor
+	// demon process leak.
+	defer prx.Close()
+	
 	httpcli := &http.Client{
 		Transport: &http.Transport{
 			DialContext: prx.DialContext,
@@ -43,12 +46,12 @@ func main() {
 
 	resp, err := httpcli.Get("https://check.torproject.org/api/ip")
 	if err != nil {
-		log.Fatalln("failed to execute http request to tor project api:", err)
+		log.Panicln("failed to execute http request to tor project api:", err)
 	}
 
 	text, err := httputil.DumpResponse(resp, true)
 	if err != nil {
-		log.Fatalln("failed to dump full response info:", err)
+		log.Panicln("failed to dump full response info:", err)
 	}
 
 	log.Println(string(text))
