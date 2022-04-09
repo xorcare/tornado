@@ -16,6 +16,10 @@ import (
 var _ io.Closer = (*Pool)(nil)
 
 // NewPool creates new instance of proxy Pool.
+//
+// Pool must be closed wia using Close method after end usage to prevent memory
+// leak and tor demon process leak, but keep in mind that all proxies will stop
+// working immediately after the Pool is closed.
 func NewPool(ctx context.Context, size int, ops ...Option) (*Pool, error) {
 	if ctx == nil {
 		panic("tornado: nil context")

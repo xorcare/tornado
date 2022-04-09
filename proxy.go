@@ -26,10 +26,6 @@ var _ io.Closer = (*Proxy)(nil)
 //
 // If the Proxy was created using NewProxy, it must be closed wia using Close
 // method after end usage to prevent memory leak and tor demon process leak.
-//
-// Pool must be closed wia using Close method after end usage to prevent memory
-// leak and tor demon process leak, but keep in mind that all proxies will stop
-// working immediately after the Pool is closed.
 func NewProxy(ctx context.Context, ops ...Option) (*Proxy, error) {
 	if ctx == nil {
 		panic("tornado: nil context")
