@@ -14,18 +14,22 @@ jobs:
     name: golangci-lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v2
-    - uses: actions/checkout@v2
-    - name: golangci-lint
-      uses: golangci/golangci-lint-action@v2
+    - uses: actions/setup-go@v3
       with:
-        version: v1.45.2
+        go-version: 1.19
+    - uses: actions/checkout@v3
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: v1.50.1
 
   test:
     name: Test all packages on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        go:
+        - '1.19'
         os:
         - ubuntu-latest
         - macos-latest
@@ -36,15 +40,15 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: '>=1.18'
+        go-version: ${{ matrix.go }}
 
     - name: Build
       run: go build -v ./...
 
     - name: Set up Tor
       run: |
-        brew update
-        brew install tor obfs4proxy
+        if [ -x "$(command -v 'apt')" ]; then sudo apt update && sudo apt install tor obfs4proxy; fi
+        if [ -x "$(command -v 'brew')" ]; then brew update && brew install tor obfs4proxy; fi
 
     - name: Test
       run: |
@@ -52,7 +56,7 @@ jobs:
         go tool cover -func coverage.out -o cover.out
         cat cover.out
 
-    - uses: codecov/codecov-action@v2
+    - uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.out,./cover.out
