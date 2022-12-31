@@ -7,7 +7,6 @@ package tornado
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
 	"net/url"
 	"os"
@@ -17,10 +16,6 @@ import (
 
 	"golang.org/x/net/proxy"
 )
-
-var _ proxy.Dialer = (*Proxy)(nil)
-var _ proxy.ContextDialer = (*Proxy)(nil)
-var _ io.Closer = (*Proxy)(nil)
 
 // NewProxy creates new instance of Proxy.
 //
@@ -64,7 +59,7 @@ func NewProxy(ctx context.Context, ops ...Option) (*Proxy, error) {
 // Proxy returns a ContextDialer that makes connections to the given
 // address over tor network.
 type Proxy struct {
-	proxy proxy.ContextDialer
+	proxy ContextDialer
 
 	valid     bool
 	closeFunc func() error
@@ -123,7 +118,7 @@ func (p *Proxy) isValid() bool {
 	return p != nil && p.valid
 }
 
-func openSOCKS5Proxy(port int, forward proxy.Dialer, closeFunc func() error) (*Proxy, error) {
+func openSOCKS5Proxy(port int, forward dialer, closeFunc func() error) (*Proxy, error) {
 	const socksFormat = "socks5://localhost:%d"
 	socks5URL, err := url.Parse(fmt.Sprintf(socksFormat, port))
 	if err != nil {
@@ -138,7 +133,7 @@ func openSOCKS5Proxy(port int, forward proxy.Dialer, closeFunc func() error) (*P
 	}
 
 	prx := &Proxy{
-		proxy:     dialer.(proxy.ContextDialer),
+		proxy:     dialer.(ContextDialer),
 		valid:     true,
 		closeFunc: closeFunc,
 	}

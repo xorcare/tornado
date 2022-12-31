@@ -9,8 +9,13 @@ import (
 	"fmt"
 	"testing"
 
+	"golang.org/x/net/proxy"
+
 	"github.com/xorcare/tornado/internal/torproject"
 )
+
+var _ proxy.Dialer = (*FloatingProxy)(nil)
+var _ proxy.ContextDialer = (*FloatingProxy)(nil)
 
 func TestNewFloatingProxy(t *testing.T) {
 	t.Parallel()

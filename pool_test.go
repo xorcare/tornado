@@ -6,10 +6,13 @@ package tornado
 
 import (
 	"context"
+	"io"
 	"testing"
 
 	"github.com/xorcare/tornado/internal/torproject"
 )
+
+var _ io.Closer = (*Pool)(nil)
 
 func TestNewPool(t *testing.T) {
 	t.Parallel()

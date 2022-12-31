@@ -7,10 +7,13 @@ package tornado
 import (
 	"context"
 	"errors"
+	"io"
 	"log"
 	"os"
 	"testing"
 	"time"
+
+	"golang.org/x/net/proxy"
 
 	"github.com/xorcare/tornado/internal/deadlock"
 	"github.com/xorcare/tornado/internal/torproject"
@@ -19,6 +22,10 @@ import (
 const TestProxyServerStartupTimeout = 300 * time.Second
 
 var WithTestTorrOptions = WithTorrcOption(os.Getenv("TORNADO_TEST_TORRC_OPTIONS"))
+
+var _ proxy.Dialer = (*Proxy)(nil)
+var _ proxy.ContextDialer = (*Proxy)(nil)
+var _ io.Closer = (*Proxy)(nil)
 
 func TestNewProxy(t *testing.T) {
 	t.Parallel()

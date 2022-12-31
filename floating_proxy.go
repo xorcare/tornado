@@ -7,12 +7,7 @@ package tornado
 import (
 	"context"
 	"net"
-
-	"golang.org/x/net/proxy"
 )
-
-var _ proxy.Dialer = (*FloatingProxy)(nil)
-var _ proxy.ContextDialer = (*FloatingProxy)(nil)
 
 // NewFloatingProxy creates new instance of FloatingProxy.
 func NewFloatingProxy(pool *Pool) *FloatingProxy {

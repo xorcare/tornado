@@ -8,12 +8,9 @@ package tornado // import "github.com/xorcare/tornado"
 import (
 	"context"
 	"fmt"
-	"io"
 	"runtime"
 	"sync"
 )
-
-var _ io.Closer = (*Pool)(nil)
 
 // NewPool creates new instance of proxy Pool.
 //
