@@ -2,4 +2,4 @@ module github.com/xorcare/tornado
 
 go 1.13
 
-require golang.org/x/net v0.27.0
+require golang.org/x/net v0.28.0
