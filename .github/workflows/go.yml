@@ -1,25 +1,25 @@
+---
 name: Go
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
-
 jobs:
   golangci:
     name: golangci-lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v5
-      with:
-        go-version: 1.22.0
-    - uses: actions/checkout@v4
-    - name: golangci-lint
-      uses: golangci/golangci-lint-action@v6
-      with:
-        version: v1.55.2
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.0
+      - uses: actions/checkout@v4
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.55.2
 
   test:
     name: Test all packages on ${{ matrix.os }}
@@ -27,35 +27,35 @@ jobs:
     strategy:
       matrix:
         go:
-        - '1.22.0'
+          - 1.22.0
         os:
-        - ubuntu-latest
-        - macos-latest
+          - ubuntu-latest
+          - macos-latest
       fail-fast: false
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: ${{ matrix.go }}
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
 
-    - name: Build
-      run: go build -v ./...
+      - name: Build
+        run: go build -v ./...
 
-    - name: Set up Tor
-      run: |
-        if [ -x "$(command -v 'apt')" ]; then sudo apt update && sudo apt install tor obfs4proxy; fi
-        if [ -x "$(command -v 'brew')" ]; then brew update && brew install tor obfs4proxy; fi
+      - name: Set up Tor
+        run: |
+          if [ -x "$(command -v 'apt')" ]; then sudo apt update && sudo apt install tor obfs4proxy; fi
+          if [ -x "$(command -v 'brew')" ]; then brew update && brew install tor obfs4proxy; fi
 
-    - name: Test
-      run: |
-        go test -count=1 -coverprofile=coverage.out -covermode=atomic ./...
-        go tool cover -func coverage.out -o cover.out
-        cat cover.out
+      - name: Test
+        run: |
+          go test -count=1 -coverprofile=coverage.out -covermode=atomic ./...
+          go tool cover -func coverage.out -o cover.out
+          cat cover.out
 
-    - uses: codecov/codecov-action@v4
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.out,./cover.out
-        verbose: true
+      - uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.out,./cover.out
+          verbose: true
