@@ -54,7 +54,7 @@ jobs:
           go tool cover -func coverage.out -o cover.out
           cat cover.out
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.out,./cover.out
