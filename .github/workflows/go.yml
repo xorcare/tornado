@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         go:
-          - 1.22.0
+          - 1.24.2
         os:
           - ubuntu-latest
           - macos-latest
