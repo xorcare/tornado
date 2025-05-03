@@ -7,7 +7,6 @@ package tornado
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/xorcare/tornado/internal/freeport"
@@ -43,7 +42,7 @@ func newTorrcFromState(state options) (trc torrc, err error) {
 	trc.customOption = append(trc.customOption, state.torrcOptions...)
 
 	dir := fmt.Sprintf("tornado.%d.*", os.Getpid())
-	trc.dataDirectory, err = ioutil.TempDir("", dir)
+	trc.dataDirectory, err = os.MkdirTemp("", dir)
 	if err != nil {
 		const format = "cannot create temp dir for tor proxy: %v"
 		return torrc{}, fmt.Errorf(format, err)
@@ -68,7 +67,7 @@ func newTorrcFromState(state options) (trc torrc, err error) {
 
 	trc.torrc = buf.String()
 
-	tempFile, err := ioutil.TempFile(trc.dataDirectory, "torrc.*")
+	tempFile, err := os.CreateTemp(trc.dataDirectory, "torrc.*")
 	if err != nil {
 		const format = "cannot open temp torrc file: %v"
 		return torrc{}, fmt.Errorf(format, err)
