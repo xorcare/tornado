@@ -46,5 +46,6 @@ func WithForwardContextDialer(dialer ContextDialer) Option {
 
 		s.forwardDialer = comboDialAdapter(dialer.DialContext)
 	}
+
 	return optionFunc(fun)
 }

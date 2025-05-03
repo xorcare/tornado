@@ -14,8 +14,10 @@ import (
 	"github.com/xorcare/tornado/internal/torproject"
 )
 
-var _ proxy.Dialer = (*FloatingProxy)(nil)
-var _ proxy.ContextDialer = (*FloatingProxy)(nil)
+var (
+	_ proxy.Dialer        = (*FloatingProxy)(nil)
+	_ proxy.ContextDialer = (*FloatingProxy)(nil)
+)
 
 func TestNewFloatingProxy(t *testing.T) {
 	t.Parallel()
@@ -24,6 +26,7 @@ func TestNewFloatingProxy(t *testing.T) {
 		// arrange
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
+
 		pool, err := NewPool(
 			ctx,
 			10, // pool size
@@ -34,6 +37,7 @@ func TestNewFloatingProxy(t *testing.T) {
 		}
 
 		prx := NewFloatingProxy(pool)
+
 		for i := 0; i < 5; i++ {
 			t.Run(fmt.Sprintf("Check %d", i), func(t *testing.T) {
 				t.Parallel()
@@ -45,6 +49,7 @@ func TestNewFloatingProxy(t *testing.T) {
 
 				// assert
 				t.Log("ip address received as a result of checking", cr.IP)
+
 				if !cr.IsTor {
 					t.Fatal("tor proxy server was not used")
 				}
@@ -56,6 +61,7 @@ func TestNewFloatingProxy(t *testing.T) {
 		// arrange
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
+
 		pool, err := NewPool(
 			ctx,
 			1, // pool size
@@ -66,6 +72,7 @@ func TestNewFloatingProxy(t *testing.T) {
 		}
 
 		prx := NewFloatingProxy(pool)
+
 		for i := 0; i < 5; i++ {
 			t.Run(fmt.Sprintf("Check %d", i), func(t *testing.T) {
 				t.Parallel()
@@ -77,6 +84,7 @@ func TestNewFloatingProxy(t *testing.T) {
 
 				// assert
 				t.Log("ip address received as a result of checking", cr.IP)
+
 				if !cr.IsTor {
 					t.Fatal("tor proxy server was not used")
 				}

@@ -23,9 +23,11 @@ const TestProxyServerStartupTimeout = 300 * time.Second
 
 var WithTestTorrOptions = WithTorrcOption(os.Getenv("TORNADO_TEST_TORRC_OPTIONS"))
 
-var _ proxy.Dialer = (*Proxy)(nil)
-var _ proxy.ContextDialer = (*Proxy)(nil)
-var _ io.Closer = (*Proxy)(nil)
+var (
+	_ proxy.Dialer        = (*Proxy)(nil)
+	_ proxy.ContextDialer = (*Proxy)(nil)
+	_ io.Closer           = (*Proxy)(nil)
+)
 
 func TestNewProxy(t *testing.T) {
 	t.Parallel()
@@ -50,6 +52,7 @@ func TestNewProxy(t *testing.T) {
 		// assert
 		if !errors.Is(err, deadlock.ErrDeadlockDial) {
 			const format = "deadlock.ErrDeadlockDial error was expected, but got another one: %v"
+
 			log.Fatalf(format, err)
 		}
 	})
@@ -78,6 +81,7 @@ func TestNewProxy(t *testing.T) {
 
 			// assert
 			t.Log("ip address received as a result of checking", cr.IP)
+
 			if !cr.IsTor {
 				t.Fatal("tor proxy server was not used")
 			}
@@ -92,6 +96,7 @@ func TestNewProxy(t *testing.T) {
 
 			// assert
 			t.Log("ip address received as a result of checking", cr.IP)
+
 			if !cr.IsTor {
 				t.Fatal("tor proxy server was not used")
 			}
@@ -101,9 +106,11 @@ func TestNewProxy(t *testing.T) {
 
 func TestProxy_Close(t *testing.T) {
 	t.Parallel()
+
 	newProxy := func(t *testing.T) *Proxy {
 		ctx, done := context.WithTimeout(context.Background(), TestProxyServerStartupTimeout)
 		t.Cleanup(done)
+
 		pool, err := NewProxy(ctx, WithTestTorrOptions)
 		if err != nil {
 			t.Fatal(err)
@@ -119,7 +126,6 @@ func TestProxy_Close(t *testing.T) {
 
 		// act
 		err := pool.Close()
-
 		// assert
 		if err != nil {
 			t.Fatal("should not get an error:", err)
@@ -130,6 +136,7 @@ func TestProxy_Close(t *testing.T) {
 		t.Parallel()
 		// arrange
 		pool := newProxy(t)
+
 		var err error
 
 		// act

@@ -17,6 +17,7 @@ func Much(count int) ([]int, error) {
 	}
 
 	ports := make([]int, 0, count)
+
 	for i := 0; i < count; i++ {
 		addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 		if err != nil {
@@ -29,6 +30,7 @@ func Much(count int) ([]int, error) {
 			const format = "freeport: cannot start listen: %v"
 			return nil, fmt.Errorf(format, err)
 		}
+
 		if err := listener.Close(); err != nil {
 			const format = "freeport: cannot close listener: %v"
 			return nil, fmt.Errorf(format, err)

@@ -120,6 +120,7 @@ func (p *Proxy) isValid() bool {
 
 func openSOCKS5Proxy(port int, forward dialer, closeFunc func() error) (*Proxy, error) {
 	const socksFormat = "socks5://localhost:%d"
+
 	socks5URL, err := url.Parse(fmt.Sprintf(socksFormat, port))
 	if err != nil {
 		const format = "cannot create socks5 url: %v"
