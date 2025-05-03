@@ -1,0 +1,50 @@
+---
+version: "2"
+linters:
+  default: none
+  enable:
+    - errcheck
+    - godot
+    - govet
+    - ineffassign
+    - misspell
+    - staticcheck
+    - testifylint
+    - unused
+    - whitespace
+    - wsl
+  settings:
+    unused:
+      field-writes-are-uses: false
+      post-statements-are-reads: true
+      exported-fields-are-used: false
+      local-variables-are-used: false
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - localmodule
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
