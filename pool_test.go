@@ -36,6 +36,7 @@ func TestNewPool(t *testing.T) {
 
 		// assert
 		t.Log("ip address received as a result of checking", cr.IP)
+
 		if !cr.IsTor {
 			t.Fatal("tor proxy server was not used")
 		}
@@ -44,6 +45,7 @@ func TestNewPool(t *testing.T) {
 
 func TestPool_Close(t *testing.T) {
 	t.Parallel()
+
 	newPool := func(t *testing.T) *Pool {
 		t.Helper()
 
@@ -69,7 +71,6 @@ func TestPool_Close(t *testing.T) {
 
 		// act
 		err := pool.Close()
-
 		// assert
 		if err != nil {
 			t.Fatal("should not get an error:", err)
@@ -80,6 +81,7 @@ func TestPool_Close(t *testing.T) {
 		t.Parallel()
 		// arrange
 		pool := newPool(t)
+
 		var err error
 
 		// act

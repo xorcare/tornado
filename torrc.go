@@ -38,10 +38,12 @@ func newTorrcFromState(state options) (trc torrc, err error) {
 		const format = "cannot get free ports for tor proxy: %v"
 		return torrc{}, fmt.Errorf(format, err)
 	}
+
 	trc.socksPort = append(trc.socksPort, ports...)
 	trc.customOption = append(trc.customOption, state.torrcOptions...)
 
 	dir := fmt.Sprintf("tornado.%d.*", os.Getpid())
+
 	trc.dataDirectory, err = os.MkdirTemp("", dir)
 	if err != nil {
 		const format = "cannot create temp dir for tor proxy: %v"
@@ -51,6 +53,7 @@ func newTorrcFromState(state options) (trc torrc, err error) {
 	buf := bytes.NewBuffer(make([]byte, 0, 4096))
 
 	fmt.Fprintf(buf, "DataDirectory %s\n\n", trc.dataDirectory)
+
 	for _, port := range trc.socksPort {
 		fmt.Fprintf(buf, "SocksPort %d\n\n", port)
 	}

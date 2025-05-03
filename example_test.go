@@ -16,6 +16,7 @@ import (
 
 func ExampleNewProxy() {
 	const proxyServerStartupTimeout = 15 * time.Second
+
 	ctx, done := context.WithTimeout(context.Background(), proxyServerStartupTimeout)
 	defer done()
 

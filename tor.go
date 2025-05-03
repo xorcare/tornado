@@ -20,11 +20,13 @@ func launchBackgroundTorDemon(ctx context.Context, trc torrc) (cmd *exec.Cmd, er
 
 	cmd = exec.CommandContext(ctx, "tor", "-f", trc.filename)
 	cmd.Dir = trc.dataDirectory
+
 	stdoutPipe, err := cmd.StderrPipe()
 	if err != nil {
 		const format = "failed to create stdout pipe for exec command %q: %v"
 		return nil, fmt.Errorf(format, cmd.String(), err)
 	}
+
 	defer stdoutPipe.Close()
 
 	if err := cmd.Start(); err != nil {
@@ -34,6 +36,7 @@ func launchBackgroundTorDemon(ctx context.Context, trc torrc) (cmd *exec.Cmd, er
 
 	launchLog := bytes.NewBuffer(make([]byte, 0, 4096))
 	launched := make(chan error, 1)
+
 	go func() {
 		defer close(launched)
 
@@ -41,6 +44,7 @@ func launchBackgroundTorDemon(ctx context.Context, trc torrc) (cmd *exec.Cmd, er
 		for scanner.Scan() {
 			text := scanner.Text()
 			launchLog.WriteString(text)
+
 			if strings.Contains(text, "Bootstrapped 100%") {
 				return
 			}
@@ -49,6 +53,7 @@ func launchBackgroundTorDemon(ctx context.Context, trc torrc) (cmd *exec.Cmd, er
 		if err := scanner.Err(); err != nil {
 			const format = "failed to scan text: %v"
 			launched <- fmt.Errorf(format, err)
+
 			return
 		}
 
@@ -60,10 +65,12 @@ func launchBackgroundTorDemon(ctx context.Context, trc torrc) (cmd *exec.Cmd, er
 		err = ctx.Err()
 	case err = <-launched:
 	}
+
 	if err != nil {
 		const format = "failed running the command %q: %v" +
 			"\n\n# Torrc file:\n%s" +
 			"\n\n# Launch log:\n%s"
+
 		return nil, fmt.Errorf(format, cmd.String(), err, trc.torrc, launchLog.String())
 	}
 
